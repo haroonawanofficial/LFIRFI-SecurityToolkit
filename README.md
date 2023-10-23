@@ -9,9 +9,8 @@ LFIRFI-SecurityToolkit is a powerful toolkit for testing and enhancing security 
 3. [Use Cases](#use-cases)
 4. [Code Performance](#code-performance)
 5. [SQLite Database](#sqlite-database)
-6. [Getting Started](#getting-started)
-7. [Contributing](#contributing)
-8. [License](#license)
+6. [Contributing](#contributing)
+7. [License](#license)
 
 ## Features
 
@@ -44,10 +43,6 @@ LFIRFI-SecurityToolkit is designed to efficiently scan and test LFI and RFI vuln
 ## SQLite Database
 
 This toolkit uses an SQLite database for data storage and reporting. The database stores the scan results and provides a structured way to analyze and report on identified vulnerabilities.
-
-## Getting Started
-
-For detailed instructions on getting started with LFIRFI-SecurityToolkit, please refer to the [Getting Started Guide](docs/getting-started.md).
 
 ## Contributing
 
