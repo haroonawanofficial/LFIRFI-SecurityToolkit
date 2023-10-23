@@ -325,7 +325,6 @@ if __name__ == '__main__':
         results_rfi = list(executor.map(partial(scan_urls_for_rfi, parameter=arguments[0].parameter), final_url_list))
 
     print("=========================================================================")
-    print("[>>] [Total LFI and RFI Vulnerabilities Found]")
 
     for url in final_url_list:
         if url in results_lfi:
@@ -334,4 +333,4 @@ if __name__ == '__main__':
         if url in results_rfi:
             print(f"RFI vulnerability found at URL: {url}")
 
-    print("\n[>>] [Total LFI and RFI Vulnerabilities Found]:", len(results_lfi) + len(results_rfi))
+    print("\n[>>] [Total LFI and RFI URL Audited]:", len(results_lfi) + len(results_rfi))
